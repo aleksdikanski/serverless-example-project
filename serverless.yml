@@ -1,0 +1,29 @@
+service: serverless-example 
+
+plugins:
+  - serverless-pseudo-parameters
+  - serverless-aws-alias
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-1'}
+  profile: ${opt:profile, 'default'}
+
+  deploymentBucket: serverless-deployments-${self:provider.stage}
+  role: arn:aws:iam::#{AWS::AccountId}:role/service-role/basic_lambda_execution
+
+package:
+  include:
+    - handler.js
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          path: hello
+          method: get
+          authorizer: arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:authorizer
+
