@@ -5,7 +5,7 @@
   "main": "handler.js",
   "dependencies": {},
   "devDependencies": {
-    "serverless-aws-alias": "^1.6.1",
+    "serverless-aws-alias": "git+https://github.com/aleksdikanski/serverless-aws-alias.git#master",
     "serverless-pseudo-parameters": "^1.4.2"
   },
   "scripts": {
