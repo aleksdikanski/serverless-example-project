@@ -3,6 +3,7 @@ service: serverless-example
 plugins:
   - serverless-pseudo-parameters
   - serverless-aws-alias
+  - serverless-domain-manager
 
 provider:
   name: aws
@@ -18,6 +19,14 @@ package:
   include:
     - handler.js
 
+custom:
+  customDomain:
+    domainName: ${opt:domain-name, 'example.dikanski.org'}
+    stage: ${self:provider.alias}
+    certificateName: ${opt:certificate-name, '*.dikanski.org'}
+    createRoute53Record: ${opt:route53, 'true'}
+    endpointType: 'regional'
+
 functions:
   hello:
     handler: handler.hello
@@ -25,5 +34,4 @@ functions:
       - http:
           path: hello
           method: get
-          authorizer: arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:authorizer
 
