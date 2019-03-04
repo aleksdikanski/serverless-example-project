@@ -53,7 +53,7 @@ Resources:
           -
             StatusCode: 200
             ResponseTemplates:
-              'application/json': '{"id": 1}'
+              'application/json': '{"id": 2}'
       MethodResponses:
         -
           StatusCode: 200
@@ -82,10 +82,22 @@ Resources:
     Properties:
       Description: 'Dev Deployment 1'
       RestApiId: !Ref ApiGatewayRestApi
+  ApiGatewayDeploymentDev2:
+    DependsOn:
+      - ApiGatewayMethodTestsGet
+      - ApiGatewayMethodTestsPost
+    Type: AWS::ApiGateway::Deployment
+    Properties:
+      Description: 'Dev Deployment 2'
+      RestApiId: !Ref ApiGatewayRestApi
   ApiGatewayStageDev:
     Type: AWS::ApiGateway::Stage
     Properties:
-      DeploymentId: !Ref ApiGatewayDeploymentDev
+      DeploymentId: !Ref ApiGatewayDeploymentDev2
       Description: 'Dev Stage'
       RestApiId: !Ref ApiGatewayRestApi
       StageName: 'Dev'
+      CanarySetting:
+#        DeploymentId: !Ref ApiGatewayDeploymentDevCanary
+#        PercentTraffic: 50
+
