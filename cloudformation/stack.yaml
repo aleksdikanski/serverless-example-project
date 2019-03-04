@@ -54,6 +54,9 @@ Resources:
             StatusCode: 200
             ResponseTemplates:
               'application/json': '{"id": 1}'
+      MethodResponses:
+        -
+          StatusCode: 200
   # Request object for POST /tests
   ApiGatewayModelTest:
     Type: AWS::ApiGateway::Model
@@ -71,3 +74,18 @@ Resources:
             type: string
           description:
             type: string
+  ApiGatewayDeploymentDev:
+    DependsOn:
+      - ApiGatewayMethodTestsGet
+      - ApiGatewayMethodTestsPost
+    Type: AWS::ApiGateway::Deployment
+    Properties:
+      Description: 'Dev Deployment 1'
+      RestApiId: !Ref ApiGatewayRestApi
+  ApiGatewayStageDev:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      DeploymentId: !Ref ApiGatewayDeploymentDev
+      Description: 'Dev Stage'
+      RestApiId: !Ref ApiGatewayRestApi
+      StageName: 'Dev'
