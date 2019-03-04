@@ -1,0 +1,73 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Sample CF Template for Creating API Gateway with Lambda integration.'
+Resources:
+  # The API Gateway itself
+  TestApiGatewayRestApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Description: 'CF Test API'
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+      Name: test-cf-v1
+  # Resource /tests
+  TestsPathTestApiGatewayRestApi:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt TestApiGatewayRestApi.RootResourceId
+      PathPart: tests
+      RestApiId: !Ref TestApiGatewayRestApi
+  # Resource /tests/{tests}
+  TestsTestPathTestApiGatewayRestApi:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !Ref TestsPathTestApiGatewayRestApi
+      PathPart: '{tests}'
+      RestApiId: !Ref TestApiGatewayRestApi
+  # HttpMethod GET /tests
+  GetTestsMockMethodTestApiGatewayRestApi:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref TestApiGatewayRestApi
+      ResourceId: !Ref TestsPathTestApiGatewayRestApi
+      HttpMethod: GET
+      AuthorizationType: NONE
+      Integration:
+        Type: MOCK
+  # HttpMethod POST /tests
+  PostTestsMockMethodTestApiGatewayRestApi:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref TestApiGatewayRestApi
+      ResourceId: !Ref TestsPathTestApiGatewayRestApi
+      HttpMethod: POST
+      AuthorizationType: NONE
+      RequestModels:
+          'application/json': !Ref TestModelTestApiGatewy
+      Integration: 
+        Type: MOCK
+        PassthroughBehavior: NEVER
+        RequestTemplates:
+          'application/json': '{"statusCode": 200}'
+        IntegrationResponses:
+          - 
+            StatusCode: 200
+            ResponseTemplates:
+              'application/json': '{"id": 1}'
+  # Request object for POST /tests
+  TestModelTestApiGatewy:
+    Type: AWS::ApiGateway::Model
+    Properties:
+      ContentType: application/json
+      Description: "A Test"
+      Name: Test
+      RestApiId: !Ref TestApiGatewayRestApi
+      Schema:
+        "$schema": "http://json-schema.org/draft-04/schema#" 
+        title: ATest
+        type: object
+        properties:
+          name:
+            type: string
+          description: 
+            type: string
