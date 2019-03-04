@@ -2,7 +2,7 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: 'Sample CF Template for Creating API Gateway with Lambda integration.'
 Resources:
   # The API Gateway itself
-  TestApiGatewayRestApi:
+  ApiGatewayRestApi:
     Type: AWS::ApiGateway::RestApi
     Properties:
       Description: 'CF Test API'
@@ -11,39 +11,39 @@ Resources:
           - REGIONAL
       Name: test-cf-v1
   # Resource /tests
-  TestsPathTestApiGatewayRestApi:
+  ApiGatewayResourceTests:
     Type: AWS::ApiGateway::Resource
     Properties:
-      ParentId: !GetAtt TestApiGatewayRestApi.RootResourceId
+      ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
       PathPart: tests
-      RestApiId: !Ref TestApiGatewayRestApi
+      RestApiId: !Ref ApiGatewayRestApi
   # Resource /tests/{tests}
-  TestsTestPathTestApiGatewayRestApi:
+  ApiGatewayResourceTestsTest:
     Type: AWS::ApiGateway::Resource
     Properties:
-      ParentId: !Ref TestsPathTestApiGatewayRestApi
+      ParentId: !Ref ApiGatewayResourceTests
       PathPart: '{tests}'
-      RestApiId: !Ref TestApiGatewayRestApi
+      RestApiId: !Ref ApiGatewayRestApi
   # HttpMethod GET /tests
-  GetTestsMockMethodTestApiGatewayRestApi:
+  ApiGatewayMethodTestsGet:
     Type: AWS::ApiGateway::Method
     Properties:
-      RestApiId: !Ref TestApiGatewayRestApi
-      ResourceId: !Ref TestsPathTestApiGatewayRestApi
+      RestApiId: !Ref ApiGatewayRestApi
+      ResourceId: !Ref ApiGatewayResourceTests
       HttpMethod: GET
       AuthorizationType: NONE
       Integration:
         Type: MOCK
   # HttpMethod POST /tests
-  PostTestsMockMethodTestApiGatewayRestApi:
+  ApiGatewayMethodTestsPost:
     Type: AWS::ApiGateway::Method
     Properties:
-      RestApiId: !Ref TestApiGatewayRestApi
-      ResourceId: !Ref TestsPathTestApiGatewayRestApi
+      RestApiId: !Ref ApiGatewayRestApi
+      ResourceId: !Ref ApiGatewayResourceTests
       HttpMethod: POST
       AuthorizationType: NONE
       RequestModels:
-          'application/json': !Ref TestModelTestApiGatewy
+          'application/json': !Ref ApiGatewayModelTest
       Integration: 
         Type: MOCK
         PassthroughBehavior: NEVER
@@ -55,13 +55,13 @@ Resources:
             ResponseTemplates:
               'application/json': '{"id": 1}'
   # Request object for POST /tests
-  TestModelTestApiGatewy:
+  ApiGatewayModelTest:
     Type: AWS::ApiGateway::Model
     Properties:
       ContentType: application/json
       Description: "A Test"
       Name: Test
-      RestApiId: !Ref TestApiGatewayRestApi
+      RestApiId: !Ref ApiGatewayRestApi
       Schema:
         "$schema": "http://json-schema.org/draft-04/schema#" 
         title: ATest
