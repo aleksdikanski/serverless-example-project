@@ -44,13 +44,13 @@ Resources:
       AuthorizationType: NONE
       RequestModels:
           'application/json': !Ref ApiGatewayModelTest
-      Integration: 
+      Integration:
         Type: MOCK
         PassthroughBehavior: NEVER
         RequestTemplates:
           'application/json': '{"statusCode": 200}'
         IntegrationResponses:
-          - 
+          -
             StatusCode: 200
             ResponseTemplates:
               'application/json': '{"id": 1}'
@@ -69,5 +69,5 @@ Resources:
         properties:
           name:
             type: string
-          description: 
+          description:
             type: string
